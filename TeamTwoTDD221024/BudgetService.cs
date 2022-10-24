@@ -31,7 +31,17 @@ public class BudgetService
 
         var startedBudgetsAmount = (daysInStartedMonth - startDate.Day + 1) * startedBudgets.Amount / daysInStartedMonth;
         var endedBudgetsAmount = endDate.Day * endedBudgets.Amount / daysInEndedMonth;
-        return startedBudgetsAmount + endedBudgetsAmount;
+
+        var middleMonthsAmount = 0;
+
+        while (startDate.AddMonths(1).Month <= endDate.AddMonths(-1).Month)
+        {
+            var month = startDate.AddMonths(1).ToString("yyyyMM");
+            middleMonthsAmount = middleMonthsAmount + GetMonthBudget(month).Amount;
+            startDate = startDate.AddMonths(1);
+        }
+
+        return startedBudgetsAmount + endedBudgetsAmount + middleMonthsAmount;
     }
 
     private static bool IsSameMonth(string startedYearMonth, string endedYearMonth)
