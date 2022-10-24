@@ -117,6 +117,38 @@ public class Tests
         var expected = QueryBudgets(new DateTime(2022, 10, 30), new DateTime(2022, 12, 5));
         expected.Should().Be(30205);
     }
+    
+    [Test]
+    [Ignore("not implemented")]
+    public void Query_cross_year_multiple_month()
+    {
+        GivenBudgets(new List<Budget>
+        {
+            new Budget
+            {
+                YearMonth = "202210",
+                Amount = 3100
+            },
+            new Budget
+            {
+                YearMonth = "202211",
+                Amount = 30000
+            },
+            new Budget
+            {
+                YearMonth = "202212",
+                Amount = 31
+            },
+            new Budget
+            {
+                YearMonth = "202301",
+                Amount = 310
+            },
+        });
+
+        var expected = QueryBudgets(new DateTime(2022, 10, 30), new DateTime(2023, 01, 5));
+        expected.Should().Be(30281);
+    }
 
     private decimal QueryBudgets(DateTime startDate, DateTime dateTime)
     {
