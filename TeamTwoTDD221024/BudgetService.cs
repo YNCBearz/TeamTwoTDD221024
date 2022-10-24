@@ -11,23 +11,20 @@ public class BudgetService
 
     public decimal Query(DateTime startDate, DateTime endDate)
     {
-        var budgets = _budgetRepo.GetAll();
-
-        if (!budgets.Any())
+        if (!_budgetRepo.GetAll().Any())
         {
             return 0;
         }
 
         var startedYearMonth = startDate.ToString("yyyyMM");
         var endedYearMonth = endDate.ToString("yyyyMM");
-        var startedBudgets = budgets.FirstOrDefault(x => x.YearMonth == startedYearMonth);
-        var endedBudgets = budgets.FirstOrDefault(x => x.YearMonth == endedYearMonth);
-        var daysInStartedMonth = DateTime.DaysInMonth(startDate.Year, startDate.Month);
-        var daysInEndedMonth = DateTime.DaysInMonth(endDate.Year, endDate.Month);
+        var startedBudgets = GetMonthBudget(startedYearMonth);
+        var endedBudgets = GetMonthBudget(endedYearMonth);
+        var daysInStartedMonth = GetDaysInMonth(startDate);
+        var daysInEndedMonth = GetDaysInMonth(endDate);
 
-        if (startedYearMonth == endedYearMonth)
+        if (IsSameMonth(startedYearMonth, endedYearMonth))
         {
-            Console.WriteLine(daysInStartedMonth);
             var selectedDays = (endDate - startDate).Days + 1;
             return startedBudgets.Amount * selectedDays / daysInStartedMonth;
         }
@@ -35,5 +32,20 @@ public class BudgetService
         var startedBudgetsAmount = (daysInStartedMonth - startDate.Day + 1) * startedBudgets.Amount / daysInStartedMonth;
         var endedBudgetsAmount = endDate.Day * endedBudgets.Amount / daysInEndedMonth;
         return startedBudgetsAmount + endedBudgetsAmount;
+    }
+
+    private static bool IsSameMonth(string startedYearMonth, string endedYearMonth)
+    {
+        return startedYearMonth == endedYearMonth;
+    }
+
+    private static int GetDaysInMonth(DateTime date)
+    {
+        return DateTime.DaysInMonth(date.Year, date.Month);
+    }
+
+    private Budget? GetMonthBudget(string yearMonth)
+    {
+        return _budgetRepo.GetAll().FirstOrDefault(x => x.YearMonth == yearMonth);
     }
 }
