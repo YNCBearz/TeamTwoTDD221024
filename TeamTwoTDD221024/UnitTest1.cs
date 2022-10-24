@@ -16,7 +16,7 @@ public class Tests
     }
 
     [Test]
-    public void NoBudget_Data()
+    public void No_budget_data()
     {
         GivenBudgets(new List<Budget>());
         var expected = QueryBudgets(new DateTime(), new DateTime());
@@ -37,6 +37,23 @@ public class Tests
 
         var expected = QueryBudgets(new DateTime(2022, 10, 1), new DateTime(2022, 10, 31));
         expected.Should().Be(3100);
+    }
+
+    [Ignore("")]
+    [Test]
+    public void Query_one_day()
+    {
+        GivenBudgets(new List<Budget>
+        {
+            new Budget
+            {
+                YearMonth = "202210",
+                Amount = 3100
+            }
+        });
+
+        var expected = QueryBudgets(new DateTime(2022, 10, 1), new DateTime(2022, 10, 1));
+        expected.Should().Be(100);
     }
 
     private decimal QueryBudgets(DateTime startDate, DateTime dateTime)

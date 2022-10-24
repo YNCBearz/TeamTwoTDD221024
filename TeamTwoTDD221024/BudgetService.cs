@@ -18,6 +18,8 @@ public class BudgetService
             return 0;
         }
 
-        return 3100;
+        var yearMonth = startDate.ToString("yyyyMM");
+        var budget = budgets.FirstOrDefault(x => x.YearMonth == yearMonth);
+        return budget.Amount;
     }
 }
