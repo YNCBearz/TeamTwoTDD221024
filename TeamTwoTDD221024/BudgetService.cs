@@ -20,15 +20,20 @@ public class BudgetService
 
         var startedYearMonth = startDate.ToString("yyyyMM");
         var endedYearMonth = endDate.ToString("yyyyMM");
-        var budget = budgets.FirstOrDefault(x => x.YearMonth == startedYearMonth);
-        if (startedYearMonth==endedYearMonth)
+        var startedBudgets = budgets.FirstOrDefault(x => x.YearMonth == startedYearMonth);
+        var endedBudgets = budgets.FirstOrDefault(x => x.YearMonth == endedYearMonth);
+        var daysInStartedMonth = DateTime.DaysInMonth(startDate.Year, startDate.Month);
+        var daysInEndedMonth = DateTime.DaysInMonth(endDate.Year, endDate.Month);
+
+        if (startedYearMonth == endedYearMonth)
         {
-            var daysInMonth = DateTime.DaysInMonth(startDate.Year, startDate.Month);
-            Console.WriteLine(daysInMonth);
-            var selectedDays = (endDate-startDate).Days + 1;
-            return budget.Amount * selectedDays / daysInMonth;
+            Console.WriteLine(daysInStartedMonth);
+            var selectedDays = (endDate - startDate).Days + 1;
+            return startedBudgets.Amount * selectedDays / daysInStartedMonth;
         }
-         
-        return budget.Amount;
+
+        var startedBudgetsAmount = (daysInStartedMonth - startDate.Day + 1) * startedBudgets.Amount / daysInStartedMonth;
+        var endedBudgetsAmount = endDate.Day * endedBudgets.Amount / daysInEndedMonth;
+        return startedBudgetsAmount + endedBudgetsAmount;
     }
 }

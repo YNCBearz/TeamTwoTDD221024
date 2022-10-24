@@ -71,6 +71,27 @@ public class Tests
         expected.Should().Be(300);
     }
 
+    [Test]
+    public void Query_cross_month()
+    {
+        GivenBudgets(new List<Budget>
+        {
+            new Budget
+            {
+                YearMonth = "202210",
+                Amount = 3100
+            },
+            new Budget
+            {
+                YearMonth = "202211",
+                Amount = 30000
+            },
+        });
+
+        var expected = QueryBudgets(new DateTime(2022, 10, 30), new DateTime(2022, 11, 1));
+        expected.Should().Be(1200);
+    }
+
     private decimal QueryBudgets(DateTime startDate, DateTime dateTime)
     {
         var expected = _budgetService.Query(startDate, dateTime);
