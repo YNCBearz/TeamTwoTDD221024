@@ -11,20 +11,26 @@ public class Tests
         var budgetRepo = Substitute.For<IBudgetRepo>();
         budgetRepo.GetAll().Returns(new List<Budget>());
         var budgetService = new BudgetService(budgetRepo);
-
-        var expected = budgetService.Query();
-
+        var expected = budgetService.Query(new DateTime(), new DateTime());
         expected.Should().Be(0);
     }
-}
 
-public class BudgetService
-{
-    public BudgetService(IBudgetRepo budgetRepo)
-    { }
-
-    public decimal Query()
+    [Test]
+    public void Query_whole_month()
     {
-        return 0;
+        var budgetRepo = Substitute.For<IBudgetRepo>();
+
+        budgetRepo.GetAll().Returns(new List<Budget>
+        {
+            new Budget
+            {
+                YearMonth = "202210",
+                Amount = 3100
+            }
+        });
+
+        var budgetService = new BudgetService(budgetRepo);
+        var expected = budgetService.Query(new DateTime(2022, 10, 1), new DateTime(2022, 10, 31));
+        expected.Should().Be(3100);
     }
 }
