@@ -5,22 +5,28 @@ namespace TeamTwoTDD221024;
 
 public class Tests
 {
+    private IBudgetRepo? _budgetRepo;
+    private BudgetService _budgetService;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _budgetRepo = Substitute.For<IBudgetRepo>();
+        _budgetService = new BudgetService(_budgetRepo);
+    }
+
     [Test]
     public void NoBudget_Data()
     {
-        var budgetRepo = Substitute.For<IBudgetRepo>();
-        budgetRepo.GetAll().Returns(new List<Budget>());
-        var budgetService = new BudgetService(budgetRepo);
-        var expected = budgetService.Query(new DateTime(), new DateTime());
+        GivenBudgets(new List<Budget>());
+        var expected = QueryBudgets(new DateTime(), new DateTime());
         expected.Should().Be(0);
     }
 
     [Test]
     public void Query_whole_month()
     {
-        var budgetRepo = Substitute.For<IBudgetRepo>();
-
-        budgetRepo.GetAll().Returns(new List<Budget>
+        GivenBudgets(new List<Budget>
         {
             new Budget
             {
@@ -29,8 +35,18 @@ public class Tests
             }
         });
 
-        var budgetService = new BudgetService(budgetRepo);
-        var expected = budgetService.Query(new DateTime(2022, 10, 1), new DateTime(2022, 10, 31));
+        var expected = QueryBudgets(new DateTime(2022, 10, 1), new DateTime(2022, 10, 31));
         expected.Should().Be(3100);
+    }
+
+    private decimal QueryBudgets(DateTime startDate, DateTime dateTime)
+    {
+        var expected = _budgetService.Query(startDate, dateTime);
+        return expected;
+    }
+
+    private void GivenBudgets(List<Budget> budgets)
+    {
+        _budgetRepo.GetAll().Returns(budgets);
     }
 }
