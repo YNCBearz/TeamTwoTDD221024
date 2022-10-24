@@ -55,6 +55,22 @@ public class Tests
         expected.Should().Be(100);
     }
 
+    [Test]
+    public void Query_multiday()
+    {
+        GivenBudgets(new List<Budget>
+        {
+            new Budget
+            {
+                YearMonth = "202210",
+                Amount = 3100
+            }
+        });
+
+        var expected = QueryBudgets(new DateTime(2022, 10, 1), new DateTime(2022, 10, 3));
+        expected.Should().Be(300);
+    }
+
     private decimal QueryBudgets(DateTime startDate, DateTime dateTime)
     {
         var expected = _budgetService.Query(startDate, dateTime);
