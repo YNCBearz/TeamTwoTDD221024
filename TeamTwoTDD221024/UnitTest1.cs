@@ -39,7 +39,6 @@ public class Tests
         expected.Should().Be(3100);
     }
 
-    [Ignore("")]
     [Test]
     public void Query_one_day()
     {
