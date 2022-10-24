@@ -1,18 +1,30 @@
+using FluentAssertions;
 using NSubstitute;
 
 namespace TeamTwoTDD221024;
 
 public class Tests
 {
-    [SetUp]
-    public void Setup()
+    [Test]
+    public void NoBudget_Data()
+    {
+        var budgetRepo = Substitute.For<IBudgetRepo>();
+        budgetRepo.GetAll().Returns(new List<Budget>());
+        var budgetService = new BudgetService(budgetRepo);
+
+        var expected = budgetService.Query();
+
+        expected.Should().Be(0);
+    }
+}
+
+public class BudgetService
+{
+    public BudgetService(IBudgetRepo budgetRepo)
     { }
 
-    [Test]
-    public void Test1()
+    public decimal Query()
     {
-        var Instance = Substitute.For<IBudgetRepo>();
-        
-        Assert.Pass();
+        return 0;
     }
 }
