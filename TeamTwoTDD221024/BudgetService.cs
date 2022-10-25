@@ -21,21 +21,20 @@ public class BudgetService
             return 0;
         }
 
-        var startedYearMonth = startDate.ToString("yyyyMM");
-        var endedYearMonth = endDate.ToString("yyyyMM");
-        var startedBudgets = GetMonthBudget(startedYearMonth);
-        var endedBudgets = GetMonthBudget(endedYearMonth);
         var daysInStartedMonth = GetDaysInMonth(startDate);
         var daysInEndedMonth = GetDaysInMonth(endDate);
 
-        if (IsSameMonth(startedYearMonth, endedYearMonth))
+        var startedBudgetAmount = GetBudgetAmount(startDate);
+        var endedBudgetAmount = GetBudgetAmount(endDate);
+
+        if (IsSameMonth(startDate, endDate))
         {
             var selectedDays = (endDate - startDate).Days + 1;
-            return startedBudgets.Amount * selectedDays / daysInStartedMonth;
+            return startedBudgetAmount * selectedDays / daysInStartedMonth;
         }
 
-        var startedBudgetsAmount = (daysInStartedMonth - startDate.Day + 1) * startedBudgets.Amount / daysInStartedMonth;
-        var endedBudgetsAmount = endDate.Day * endedBudgets.Amount / daysInEndedMonth;
+        var startedBudgetsAmount = (daysInStartedMonth - startDate.Day + 1) * startedBudgetAmount / daysInStartedMonth;
+        var endedBudgetsAmount = endDate.Day * endedBudgetAmount / daysInEndedMonth;
 
         var middleMonthsAmount = 0;
 
@@ -44,25 +43,25 @@ public class BudgetService
         while (middleMonth <= endDate)
         {
             var month = middleMonth.ToString("yyyyMM");
-            middleMonthsAmount += GetMonthBudget(month).Amount;
+            middleMonthsAmount += _budgetRepo.GetAll().FirstOrDefault(x => x.YearMonth == month).Amount;
             middleMonth = middleMonth.AddMonths(1);
         }
 
         return startedBudgetsAmount + endedBudgetsAmount + middleMonthsAmount;
     }
 
-    private static bool IsSameMonth(string startedYearMonth, string endedYearMonth)
+    private int GetBudgetAmount(DateTime yearMonth)
     {
-        return startedYearMonth == endedYearMonth;
+        return _budgetRepo.GetAll().FirstOrDefault(x => x.YearMonth == yearMonth.ToString("yyyyMM"))?.Amount ?? 0;
+    }
+
+    private static bool IsSameMonth(DateTime startedDate, DateTime endedDate)
+    {
+        return startedDate.Month == endedDate.Month;
     }
 
     private static int GetDaysInMonth(DateTime date)
     {
         return DateTime.DaysInMonth(date.Year, date.Month);
-    }
-
-    private Budget? GetMonthBudget(string yearMonth)
-    {
-        return _budgetRepo.GetAll().FirstOrDefault(x => x.YearMonth == yearMonth);
     }
 }

@@ -38,6 +38,22 @@ public class Tests
         var expected = QueryBudgets(new DateTime(2022, 10, 1), new DateTime(2022, 10, 31));
         expected.Should().Be(3100);
     }
+    
+    [Test]
+    public void Query_but_missing_budget()
+    {
+        GivenBudgets(new List<Budget>
+        {
+            new Budget
+            {
+                YearMonth = "202211",
+                Amount = 3100
+            }
+        });
+
+        var expected = QueryBudgets(new DateTime(2022, 10, 1), new DateTime(2022, 10, 31));
+        expected.Should().Be(0);
+    }
 
     [Test]
     public void Query_one_day()
