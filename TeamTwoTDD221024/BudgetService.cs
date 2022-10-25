@@ -21,20 +21,17 @@ public class BudgetService
             return 0;
         }
 
-        var daysInStartedMonth = GetDaysInMonth(startDate);
-        var daysInEndedMonth = GetDaysInMonth(endDate);
-
-        var startedBudgetAmount = GetBudgetAmount(startDate);
-        var endedBudgetAmount = GetBudgetAmount(endDate);
+        var startedMonthDailyAmount = GetDailyAmount(startDate);
+        var endedMonthDailyAmount = GetDailyAmount(endDate);
 
         if (IsSameMonth(startDate, endDate))
         {
             var selectedDays = (endDate - startDate).Days + 1;
-            return startedBudgetAmount * selectedDays / daysInStartedMonth;
+            return selectedDays * startedMonthDailyAmount;
         }
 
-        var startedBudgetsAmount = (daysInStartedMonth - startDate.Day + 1) * startedBudgetAmount / daysInStartedMonth;
-        var endedBudgetsAmount = endDate.Day * endedBudgetAmount / daysInEndedMonth;
+        var startedBudgetsAmount = (GetDaysInMonth(startDate) - startDate.Day + 1) * startedMonthDailyAmount;
+        var endedBudgetsAmount = endDate.Day * endedMonthDailyAmount;
 
         var middleMonthsAmount = 0;
 
@@ -47,6 +44,11 @@ public class BudgetService
         }
 
         return startedBudgetsAmount + endedBudgetsAmount + middleMonthsAmount;
+    }
+
+    private int GetDailyAmount(DateTime startDate)
+    {
+        return GetBudgetAmount(startDate) / GetDaysInMonth(startDate);
     }
 
     private int GetBudgetAmount(DateTime yearMonth)

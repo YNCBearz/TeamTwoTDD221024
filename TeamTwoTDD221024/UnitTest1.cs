@@ -16,7 +16,7 @@ public class Tests
     }
 
     [Test]
-    public void No_budget_data()
+    public void Query_no_budgets_data()
     {
         GivenBudgets(new List<Budget>());
         var expected = QueryBudgets(new DateTime(), new DateTime());
