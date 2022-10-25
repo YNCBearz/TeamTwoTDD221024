@@ -34,7 +34,7 @@ public class BudgetService
 
         var middleMonthsAmount = 0;
 
-        while (startDate.AddMonths(1).Month <= endDate.AddMonths(-1).Month)
+        while (startDate.AddMonths(1) <= endDate)
         {
             var month = startDate.AddMonths(1).ToString("yyyyMM");
             middleMonthsAmount += GetMonthBudget(month).Amount;

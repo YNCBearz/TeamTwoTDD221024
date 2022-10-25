@@ -119,7 +119,6 @@ public class Tests
     }
     
     [Test]
-    [Ignore("not implemented")]
     public void Query_cross_year_multiple_month()
     {
         GivenBudgets(new List<Budget>
