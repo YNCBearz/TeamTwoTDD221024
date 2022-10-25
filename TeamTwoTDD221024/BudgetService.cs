@@ -16,6 +16,11 @@ public class BudgetService
             return 0;
         }
 
+        if (endDate < startDate)
+        {
+            return 0;
+        }
+
         var startedYearMonth = startDate.ToString("yyyyMM");
         var endedYearMonth = endDate.ToString("yyyyMM");
         var startedBudgets = GetMonthBudget(startedYearMonth);
@@ -34,11 +39,13 @@ public class BudgetService
 
         var middleMonthsAmount = 0;
 
-        while (startDate.AddMonths(1) <= endDate)
+        var middleMonth = startDate.AddMonths(1);
+
+        while (middleMonth <= endDate)
         {
-            var month = startDate.AddMonths(1).ToString("yyyyMM");
+            var month = middleMonth.ToString("yyyyMM");
             middleMonthsAmount += GetMonthBudget(month).Amount;
-            startDate = startDate.AddMonths(1);
+            middleMonth = middleMonth.AddMonths(1);
         }
 
         return startedBudgetsAmount + endedBudgetsAmount + middleMonthsAmount;
