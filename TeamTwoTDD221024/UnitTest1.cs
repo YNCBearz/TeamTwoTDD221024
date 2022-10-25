@@ -133,6 +133,27 @@ public class Tests
         var expected = QueryBudgets(new DateTime(2022, 10, 30), new DateTime(2022, 12, 5));
         expected.Should().Be(30205);
     }
+    
+    [Test]
+    public void Query_cross_multiple_month_but_missing_one_month_budget()
+    {
+        GivenBudgets(new List<Budget>
+        {
+            new Budget
+            {
+                YearMonth = "202210",
+                Amount = 3100
+            },
+            new Budget
+            {
+                YearMonth = "202212",
+                Amount = 31
+            },
+        });
+
+        var expected = QueryBudgets(new DateTime(2022, 10, 30), new DateTime(2022, 12, 5));
+        expected.Should().Be(205);
+    }
 
     [Test]
     public void Query_cross_year_multiple_month()

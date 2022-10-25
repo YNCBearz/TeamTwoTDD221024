@@ -42,8 +42,7 @@ public class BudgetService
 
         while (middleMonth <= endDate)
         {
-            var month = middleMonth.ToString("yyyyMM");
-            middleMonthsAmount += _budgetRepo.GetAll().FirstOrDefault(x => x.YearMonth == month).Amount;
+            middleMonthsAmount += GetBudgetAmount(middleMonth);
             middleMonth = middleMonth.AddMonths(1);
         }
 
